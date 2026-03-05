@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wingman</title>
+  <link rel="stylesheet" href="sidebar.css" />
+  <script src="../vendor/marked.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <span class="header-title">✈ Wingman</span>
+    <button class="icon-btn" id="btn-settings" title="Settings">⚙️</button>
+    <button class="icon-btn" id="btn-clear" title="Clear conversation">🗑</button>
+  </header>
+
+  <main class="messages" id="messages"></main>
+
+  <footer class="input-area">
+    <textarea
+      id="input"
+      placeholder="Ask Wingman anything about your email…"
+      rows="3"
+      autofocus
+    ></textarea>
+    <button id="btn-send">Send ↵</button>
+  </footer>
+
+  <script type="module" src="sidebar.js"></script>
+</body>
+</html>
