@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wingman Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 24px;
+      max-width: 560px;
+    }
+
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .subtitle { color: #6e7fad; font-size: 12px; margin-bottom: 28px; }
+
+    h2 {
+      font-size: 13px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #6e7fad; margin: 28px 0 14px;
+    }
+
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; margin-bottom: 5px; }
+    .hint { font-size: 11px; color: #6e7fad; margin-top: 4px; }
+
+    input, select {
+      width: 100%;
+      background: #2a2a3e;
+      color: #cdd6f4;
+      border: 1px solid #3a3a5c;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus { border-color: #7c9ef8; }
+
+    .privacy-warning {
+      background: #3a2020;
+      border: 1px solid #f38ba8;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #f38ba8;
+      margin-top: 12px;
+      display: none;
+    }
+    .privacy-warning.visible { display: block; }
+
+    .privacy-ok {
+      background: #1a3020;
+      border: 1px solid #a6e3a1;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #a6e3a1;
+      margin-top: 12px;
+      display: none;
+    }
+    .privacy-ok.visible { display: block; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-row label { margin: 0; }
+
+    input[type=checkbox] {
+      width: auto;
+      accent-color: #7c9ef8;
+    }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .actions { margin-top: 28px; display: flex; gap: 10px; align-items: center; }
+
+    button {
+      background: #7c9ef8;
+      color: #1e1e2e;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+
+    #status { font-size: 12px; color: #a6e3a1; }
+    #status.error { color: #f38ba8; }
+  </style>
+</head>
+<body>
+  <h1>✈ Wingman</h1>
+  <p class="subtitle">AI email assistant for Thunderbird</p>
+
+  <h2>AI Provider</h2>
+
+  <div class="field">
+    <label for="provider">Provider</label>
+    <select id="provider">
+      <option value="anthropic">Anthropic (Claude)</option>
+      <option value="openai">OpenAI (ChatGPT)</option>
+      <option value="ollama">Ollama (local)</option>
+      <option value="openrouter">OpenRouter</option>
+      <option value="custom">Custom (OpenAI-compatible)</option>
+    </select>
+  </div>
+
+  <div class="field" id="field-base-url">
+    <label for="baseURL">API Base URL</label>
+    <input type="text" id="baseURL" placeholder="http://localhost:11434/v1" />
+    <p class="hint" id="base-url-hint"></p>
+  </div>
+
+  <div class="field" id="field-api-key">
+    <label for="apiKey">API Key</label>
+    <input type="password" id="apiKey" placeholder="sk-…" autocomplete="off" />
+    <p class="hint">Stored locally in Thunderbird only — never synced.</p>
+  </div>
+
+  <div id="privacy-warning" class="privacy-warning">
+    ⚠ <strong>Privacy notice:</strong> With this provider, your email content (message bodies,
+    subjects, sender addresses) will be transmitted to external servers for AI processing.
+    Use Ollama or another local provider if you want to keep email data on your machine.
+  </div>
+
+  <div id="privacy-ok" class="privacy-ok">
+    ✓ <strong>Local model:</strong> Your email data stays on your machine and is never sent to
+    external servers.
+  </div>
+
+  <div class="field">
+    <label for="model">Model</label>
+    <input type="text" id="model" placeholder="Model name" />
+    <p class="hint" id="model-hint"></p>
+  </div>
+
+  <h2>Behaviour</h2>
+
+  <div class="row-2">
+    <div class="field">
+      <label for="maxTokens">Max tokens per response</label>
+      <input type="number" id="maxTokens" min="256" max="8192" step="256" />
+    </div>
+    <div class="field">
+      <label for="maxResults">Max search results</label>
+      <input type="number" id="maxResults" min="5" max="100" step="5" />
+    </div>
+  </div>
+
+  <div class="row-2">
+    <div class="field">
+      <label for="truncateLimit">Body truncation (chars)</label>
+      <input type="number" id="truncateLimit" min="500" max="10000" step="500" />
+    </div>
+    <div class="field" style="display:flex; flex-direction:column; justify-content:flex-end;">
+      <div class="toggle-row">
+        <label for="streaming">Stream text as it arrives</label>
+        <input type="checkbox" id="streaming" />
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="toggle-row">
+      <label for="autoClear">Auto-clear history when sidebar closes</label>
+      <input type="checkbox" id="autoClear" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="btn-save">Save settings</button>
+    <span id="status"></span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
